@@ -9,6 +9,9 @@ player.sf_y = 0.1
 player.imageno = 1
 player.image_ctr = 0
 
+player.f_speed = 3
+player.b_speed = 1
+
 function love.load()
     player.screen_x = love.graphics.getWidth() / 2
     player.screen_y = love.graphics.getHeight() / 2
