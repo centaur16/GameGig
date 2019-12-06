@@ -1,5 +1,7 @@
 player = {}
 player.angle = 0
+player.actual_x = 300
+player.actual_y = 400
 player.map_x = 300
 player.map_y = 400
 player.screen_x = 0
@@ -12,15 +14,39 @@ player.image_ctr = 0
 player.f_speed = 3
 player.b_speed = 1
 
+objects = {}
+objects.circle_x = 300
+objects.circle_y = 300
+objects.circle_radius = 50
+
 function love.load()
     player.screen_x = love.graphics.getWidth() / 2
     player.screen_y = love.graphics.getHeight() / 2
+    
+    rotated_screen_vector = rotate_vector(player.screen_x, player.screen_y, player.angle )
+    player.actual_x = player.map_x + rotated_screen_vector[1]
+    player.actual_y = player.map_y + rotated_screen_vector[2]
 
     player.images = {}
     player.images[1] = love.graphics.newImage("bike-straight_1.png")
     player.images[2] = love.graphics.newImage("bike-straight_2.png")
 
     love.graphics.setBackgroundColor(0.96, 0.97, 0.86)
+end
+
+function rotate_vector(x, y, theta)
+    new_x = x * math.cos(theta) - y * math.sin(theta)
+    new_y = x * math.sin(theta) + y * math.cos(theta)
+    return {x, y}
+end
+
+function collided_with_circle()
+    dist = euclidean_distance(player.actual_x, player.actual_y, objects.circle_x, objects.circle_y) 
+    return dist < objects.circle_radius
+end 
+
+function euclidean_distance(x1, y1, x2, y2)
+    return math.sqrt(math.pow(x1-x2, 2) + math.pow(y1-y2, 2))
 end
 
 function love.update(dt)
@@ -44,6 +70,11 @@ function love.update(dt)
     elseif love.keyboard.isDown('right') or love.keyboard.isDown('d') then
         player.angle = player.angle - 0.01
     end
+
+    -- Update actual coordinates for player
+    rotated_screen_vector = rotate_vector(player.screen_x, player.screen_y, player.angle )
+    player.actual_x = player.map_x + rotated_screen_vector[1]
+    player.actual_y = player.map_y + rotated_screen_vector[2]
 end
 
 function love.draw()
@@ -59,6 +90,7 @@ function love.draw()
     love.graphics.translate(-player.map_x, -player.map_y)
     -- Draw everything else
     love.graphics.rectangle('fill', 300, 400, 30, 200)
+    love.graphics.circle('fill', objects.circle_x, objects.circle_y, objects.circle_radius)
     -- Translate from map coordinates
     love.graphics.translate(player.map_x, player.map_y)
 
