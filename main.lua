@@ -16,11 +16,12 @@ function love.load()
     player.images = {}
     player.images[1] = love.graphics.newImage("bike-straight_1.png")
     player.images[2] = love.graphics.newImage("bike-straight_2.png")
-    
+
+    love.graphics.setBackgroundColor(0.96, 0.97, 0.86)
 end
 
 function love.update(dt)
-    if  player.image_ctr >= 30 then
+    if  player.image_ctr >= 10 then
         player.imageno = (player.imageno % 2) + 1
         player.image_ctr = 1
     else
@@ -28,11 +29,11 @@ function love.update(dt)
     end
 
     if love.keyboard.isDown('up') or love.keyboard.isDown('w') then
-        player.map_x = player.map_x - math.sin(player.angle)
-        player.map_y = player.map_y - math.cos(player.angle)
+        player.map_x = player.map_x - player.f_speed * math.sin(player.angle)
+        player.map_y = player.map_y - player.f_speed * math.cos(player.angle)
     elseif love.keyboard.isDown('down') or love.keyboard.isDown('s') then
-        player.map_x = player.map_x + math.sin(player.angle)
-        player.map_y = player.map_y + math.cos(player.angle)
+        player.map_x = player.map_x + player.b_speed * math.sin(player.angle)
+        player.map_y = player.map_y + player.b_speed * math.cos(player.angle)
     end
 
     if love.keyboard.isDown('left') or love.keyboard.isDown('a') then
@@ -77,8 +78,6 @@ function love.draw()
     love.graphics.rotate(-player.angle)
     -- Translate so player isn't at the origin
     love.graphics.translate(-player.screen_x, -player.screen_y)
-
-
 
 end
 
