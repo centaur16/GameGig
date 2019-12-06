@@ -1,3 +1,5 @@
+require 'tourism'
+
 player = {}
 player.angle = 0
 player.actual_x = 300
@@ -14,10 +16,14 @@ player.image_ctr = 0
 player.f_speed = 3
 player.b_speed = 1
 
+player.score = 0
+
 objects = {}
 objects.circle_x = 300
 objects.circle_y = 300
 objects.circle_radius = 50
+
+tourists = {}
 
 function love.load()
     player.screen_x = love.graphics.getWidth() / 2
@@ -32,6 +38,12 @@ function love.load()
     player.images[2] = love.graphics.newImage("bike-straight_2.png")
 
     love.graphics.setBackgroundColor(0.96, 0.97, 0.86)
+
+    for i=1, 50, 1 do
+        t = new_tourist("tourist.png", player.map_x, player.map_y, player.map_x+300, player.map_y+300, 0.0)
+        table.insert(tourists, t)
+    end
+    print(#tourists)
 end
 
 function rotate_vector(x, y, theta)
@@ -71,10 +83,15 @@ function love.update(dt)
         player.angle = player.angle - 0.01
     end
 
+
     -- Update actual coordinates for player
     rotated_screen_vector = rotate_vector(player.screen_x, player.screen_y, player.angle )
     player.actual_x = player.map_x + rotated_screen_vector[1]
     player.actual_y = player.map_y + rotated_screen_vector[2]
+
+    for i=1, #tourists, 1 do
+        tourist_shuffle(tourists[i], dt)
+    end
 end
 
 function love.draw()
@@ -91,6 +108,10 @@ function love.draw()
     -- Draw everything else
     love.graphics.rectangle('fill', 300, 400, 30, 200)
     love.graphics.circle('fill', objects.circle_x, objects.circle_y, objects.circle_radius)
+
+    for i=1, #tourists, 1 do
+        tourist_draw(tourists[i])
+    end
     -- Translate from map coordinates
     love.graphics.translate(player.map_x, player.map_y)
 
