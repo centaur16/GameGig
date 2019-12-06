@@ -52,16 +52,12 @@ function rotate_vector(x, y, theta)
     return {x, y}
 end
 
-function collided_with_circle()
-    dist = euclidean_distance(player.actual_x, player.actual_y, objects.circle_x, objects.circle_y) 
-    return dist < objects.circle_radius
-end 
-
 function euclidean_distance(x1, y1, x2, y2)
     return math.sqrt(math.pow(x1-x2, 2) + math.pow(y1-y2, 2))
 end
 
 function love.update(dt)
+
     if  player.image_ctr >= 10 then
         player.imageno = (player.imageno % 2) + 1
         player.image_ctr = 1
@@ -91,6 +87,10 @@ function love.update(dt)
 
     for i=1, #tourists, 1 do
         tourist_shuffle(tourists[i], dt)
+        if is_touching(tourists[i], player.actual_x, player.actual_y) then
+            player.score = player.score + 1
+            teleport(tourists[i])
+        end
     end
 end
 
@@ -134,6 +134,8 @@ function love.draw()
     love.graphics.rotate(-player.angle)
     -- Translate so player isn't at the origin
     love.graphics.translate(-player.screen_x, -player.screen_y)
+
+    love.graphics.print(player.score, player.screen_x, player.screen_y)
 
 end
 

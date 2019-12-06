@@ -1,3 +1,7 @@
+function euclidean_distance(x1, y1, x2, y2)
+    return math.sqrt(math.pow(x1-x2, 2) + math.pow(y1-y2, 2))
+end
+
 function new_tourist(image, street_x, street_y, street_width, street_height, street_angle)
     local tourist = {}
     local x = math.random(0, street_width)
@@ -27,7 +31,7 @@ function tourist_draw(tourist)
 end
 
 function is_touching(tourist, player_x, player_y)
-    return euclidian_distance(tourist.map_x, tourist.map_y, player_x, player_y) < 10
+    return euclidean_distance(tourist.map_x, tourist.map_y, player_x, player_y) < 50
 end
 
 function teleport(tourist) 
